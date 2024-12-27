@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import { Exercise, WorkoutSeries, WorkoutExercise } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { GripVertical, Plus, Trash2 } from "lucide-react";
+import { Exercise, WorkoutSeries, WorkoutExercise } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { GripVertical, Plus, Trash2 } from 'lucide-react';
 
 interface SeriesFormProps {
-  onSubmit: (series: Omit<WorkoutSeries, "id" | "createdAt" | "updatedAt">) => void;
+  onSubmit: (series: Omit<WorkoutSeries, 'id' | 'createdAt' | 'updatedAt'>) => void;
   initialData?: WorkoutSeries;
   exercises: Exercise[];
 }
 
 export function SeriesForm({ onSubmit, initialData, exercises }: SeriesFormProps) {
   const [formData, setFormData] = useState({
-    name: initialData?.name || "",
-    description: initialData?.description || "",
+    name: initialData?.name || '',
+    description: initialData?.description || '',
     exercises: initialData?.exercises || [],
     restTimeInSeconds: initialData?.restTimeInSeconds || 60,
   });
@@ -49,9 +49,7 @@ export function SeriesForm({ onSubmit, initialData, exercises }: SeriesFormProps
   };
 
   const handleExerciseChange = (index: number, field: keyof WorkoutExercise, value: any) => {
-    const updatedExercises = formData.exercises.map((ex, i) =>
-      i === index ? { ...ex, [field]: value } : ex
-    );
+    const updatedExercises = formData.exercises.map((ex, i) => (i === index ? { ...ex, [field]: value } : ex));
     setFormData({ ...formData, exercises: updatedExercises });
   };
 
@@ -63,12 +61,12 @@ export function SeriesForm({ onSubmit, initialData, exercises }: SeriesFormProps
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>{initialData ? "Editar Série" : "Nova Série"}</CardTitle>
+        <CardTitle>{initialData ? 'Editar Série' : 'Nova Série'}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Nome da Série</Label>
+            <Label htmlFor="name">Nome da Série *</Label>
             <Input
               id="name"
               value={formData.name}
@@ -83,19 +81,21 @@ export function SeriesForm({ onSubmit, initialData, exercises }: SeriesFormProps
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="restTime">Tempo de Descanso (segundos)</Label>
+            <Label htmlFor="restTime">Tempo de Descanso (segundos) *</Label>
             <Input
               id="restTime"
               type="number"
               min="0"
               value={formData.restTimeInSeconds}
               onChange={(e) =>
-                setFormData({ ...formData, restTimeInSeconds: parseInt(e.target.value) })
+                setFormData({
+                  ...formData,
+                  restTimeInSeconds: parseInt(e.target.value),
+                })
               }
               required
             />
@@ -114,17 +114,15 @@ export function SeriesForm({ onSubmit, initialData, exercises }: SeriesFormProps
               {formData.exercises.map((exercise, index) => (
                 <Card key={index}>
                   <CardContent className="pt-6">
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-4">
                       <GripVertical className="h-5 w-5 text-muted-foreground" />
-                      <div className="flex-1 grid grid-cols-3 gap-4">
+                      <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                           <Label>Exercício</Label>
                           <select
                             className="w-full mt-1 rounded-md border border-input bg-background px-3 py-2"
                             value={exercise.exerciseId}
-                            onChange={(e) =>
-                              handleExerciseChange(index, "exerciseId", e.target.value)
-                            }
+                            onChange={(e) => handleExerciseChange(index, 'exerciseId', e.target.value)}
                           >
                             {exercises.map((ex) => (
                               <option key={ex.id} value={ex.id}>
@@ -136,23 +134,21 @@ export function SeriesForm({ onSubmit, initialData, exercises }: SeriesFormProps
                         <div>
                           <Label>Séries</Label>
                           <Input
+                            className="w-full mt-1"
                             type="number"
                             min="1"
                             value={exercise.sets}
-                            onChange={(e) =>
-                              handleExerciseChange(index, "sets", parseInt(e.target.value))
-                            }
+                            onChange={(e) => handleExerciseChange(index, 'sets', parseInt(e.target.value))}
                           />
                         </div>
                         <div>
                           <Label>Repetições</Label>
                           <Input
+                            className="w-full mt-1"
                             type="number"
                             min="1"
                             value={exercise.reps}
-                            onChange={(e) =>
-                              handleExerciseChange(index, "reps", parseInt(e.target.value))
-                            }
+                            onChange={(e) => handleExerciseChange(index, 'reps', parseInt(e.target.value))}
                           />
                         </div>
                       </div>
@@ -172,7 +168,7 @@ export function SeriesForm({ onSubmit, initialData, exercises }: SeriesFormProps
           </div>
 
           <Button type="submit" className="w-full">
-            {initialData ? "Atualizar" : "Criar"} Série
+            {initialData ? 'Atualizar' : 'Criar'} Série
           </Button>
         </form>
       </CardContent>

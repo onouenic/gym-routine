@@ -35,7 +35,7 @@ export function ExerciseForm({ onSubmit, initialData }: ExerciseFormProps) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Nome do Exercício</Label>
+            <Label htmlFor="name">Nome do Exercício *</Label>
             <Input
               id="name"
               value={formData.name}
@@ -50,7 +50,6 @@ export function ExerciseForm({ onSubmit, initialData }: ExerciseFormProps) {
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              required
             />
           </div>
 
@@ -61,13 +60,12 @@ export function ExerciseForm({ onSubmit, initialData }: ExerciseFormProps) {
               type="url"
               value={formData.videoUrl}
               onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
-              required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="defaultReps">Repetições Padrão</Label>
+              <Label htmlFor="defaultReps">Repetições Padrão *</Label>
               <Input
                 id="defaultReps"
                 type="number"
@@ -79,7 +77,7 @@ export function ExerciseForm({ onSubmit, initialData }: ExerciseFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="defaultSets">Séries Padrão</Label>
+              <Label htmlFor="defaultSets">Séries Padrão *</Label>
               <Input
                 id="defaultSets"
                 type="number"
