@@ -1,27 +1,30 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { WorkoutSeries, Exercise } from "@/types";
-import { SeriesForm } from "@/components/series-form";
-import { SeriesList } from "@/components/series-list";
-import { getSeries, saveSeries, getExercises } from "@/lib/store";
-import { Button } from "@/components/ui/button";
-import { Plus, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { WorkoutSeries, Exercise } from '@/types';
+import { SeriesForm } from '@/components/series-form';
+import { SeriesList } from '@/components/series-list';
+import { getSeries, saveSeries, getExercises } from '@/lib/store';
+import { Button } from '@/components/ui/button';
+import { Plus, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { DeleteConfirmationModal } from '@/components/delete-modal';
 
 export default function SeriesPage() {
   const [series, setSeries] = useState<WorkoutSeries[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingSeries, setEditingSeries] = useState<WorkoutSeries | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [seriesToDelete, setSeriesToDelete] = useState<WorkoutSeries | null>(null);
 
   useEffect(() => {
     setSeries(getSeries());
     setExercises(getExercises());
   }, []);
 
-  const handleSubmit = (seriesData: Omit<WorkoutSeries, "id" | "createdAt" | "updatedAt">) => {
+  const handleSubmit = (seriesData: Omit<WorkoutSeries, 'id' | 'createdAt' | 'updatedAt'>) => {
     let updatedSeries: WorkoutSeries[];
 
     if (editingSeries) {
@@ -56,11 +59,25 @@ export default function SeriesPage() {
     setIsAdding(true);
   };
 
-  const handleDelete = (id: string) => {
-    const updatedSeries = series.filter((s) => s.id !== id);
+  const confirmDelete = (id: string) => {
+    const updatedSeries = series.filter((ex) => ex.id !== id);
     setSeries(updatedSeries);
     saveSeries(updatedSeries);
+    setIsModalOpen(false);
+    setSeriesToDelete(null);
   };
+
+  const handleDelete = (id: string) => {
+    const seriesToDelete = series.find((ex) => ex.id === id);
+    setSeriesToDelete(seriesToDelete || null);
+    setIsModalOpen(true);
+  };
+
+  // const handleDelete = (id: string) => {
+  //   const updatedSeries = series.filter((s) => s.id !== id);
+  //   setSeries(updatedSeries);
+  //   saveSeries(updatedSeries);
+  // };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -81,11 +98,7 @@ export default function SeriesPage() {
 
       {isAdding ? (
         <div className="mb-8">
-          <SeriesForm
-            onSubmit={handleSubmit}
-            initialData={editingSeries || undefined}
-            exercises={exercises}
-          />
+          <SeriesForm onSubmit={handleSubmit} initialData={editingSeries || undefined} exercises={exercises} />
           <Button
             variant="ghost"
             onClick={() => {
@@ -98,13 +111,15 @@ export default function SeriesPage() {
           </Button>
         </div>
       ) : (
-        <SeriesList
-          series={series}
-          exercises={exercises}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        <SeriesList series={series} exercises={exercises} onEdit={handleEdit} onDelete={handleDelete} />
       )}
+
+      <DeleteConfirmationModal
+        isOpen={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onConfirm={() => confirmDelete(seriesToDelete?.id || '')}
+        exerciseName={seriesToDelete?.name}
+      />
     </div>
   );
 }
