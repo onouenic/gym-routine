@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { Exercise } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Exercise } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 interface ExerciseFormProps {
-  onSubmit: (exercise: Omit<Exercise, "id">) => void;
+  onSubmit: (exercise: Omit<Exercise, 'id'>) => void;
   initialData?: Exercise;
 }
 
 export function ExerciseForm({ onSubmit, initialData }: ExerciseFormProps) {
   const [formData, setFormData] = useState({
-    name: initialData?.name || "",
-    description: initialData?.description || "",
-    videoUrl: initialData?.videoUrl || "",
+    name: initialData?.name || '',
+    description: initialData?.description || '',
+    videoUrl: initialData?.videoUrl || '',
     defaultReps: initialData?.defaultReps || 12,
     defaultSets: initialData?.defaultSets || 3,
   });
@@ -30,7 +30,7 @@ export function ExerciseForm({ onSubmit, initialData }: ExerciseFormProps) {
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>{initialData ? "Editar Exercício" : "Novo Exercício"}</CardTitle>
+        <CardTitle>{initialData ? 'Editar Exercício' : 'Novo Exercício'}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -90,7 +90,7 @@ export function ExerciseForm({ onSubmit, initialData }: ExerciseFormProps) {
           </div>
 
           <Button type="submit" className="w-full">
-            {initialData ? "Atualizar" : "Criar"} Exercício
+            {initialData ? 'Atualizar' : 'Criar'} Exercício
           </Button>
         </form>
       </CardContent>

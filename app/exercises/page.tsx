@@ -1,31 +1,32 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { Exercise } from "@/types";
-import { ExerciseForm } from "@/components/exercise-form";
-import { ExerciseList } from "@/components/exercise-list";
-import { getExercises, saveExercises } from "@/lib/store";
-import { Button } from "@/components/ui/button";
-import { Plus, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { Exercise } from '@/types';
+import { ExerciseForm } from '@/components/exercise-form';
+import { ExerciseList } from '@/components/exercise-list';
+import { getExercises, saveExercises } from '@/lib/store';
+import { Button } from '@/components/ui/button';
+import { Plus, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { DeleteConfirmationModal } from '@/components/delete-modal';
 
 export default function ExercisesPage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [exerciseToDelete, setExerciseToDelete] = useState<Exercise | null>(null);
 
   useEffect(() => {
     setExercises(getExercises());
   }, []);
 
-  const handleSubmit = (exerciseData: Omit<Exercise, "id">) => {
+  const handleSubmit = (exerciseData: Omit<Exercise, 'id'>) => {
     let updatedExercises: Exercise[];
 
     if (editingExercise) {
-      updatedExercises = exercises.map((ex) =>
-        ex.id === editingExercise.id ? { ...exerciseData, id: ex.id } : ex
-      );
+      updatedExercises = exercises.map((ex) => (ex.id === editingExercise.id ? { ...exerciseData, id: ex.id } : ex));
     } else {
       const newExercise = {
         ...exerciseData,
@@ -45,10 +46,18 @@ export default function ExercisesPage() {
     setIsAdding(true);
   };
 
-  const handleDelete = (id: string) => {
+  const confirmDelete = (id: string) => {
     const updatedExercises = exercises.filter((ex) => ex.id !== id);
     setExercises(updatedExercises);
     saveExercises(updatedExercises);
+    setIsModalOpen(false);
+    setExerciseToDelete(null);
+  };
+
+  const handleDelete = (id: string) => {
+    const exerciseToDelete = exercises.find((ex) => ex.id === id);
+    setExerciseToDelete(exerciseToDelete || null);
+    setIsModalOpen(true);
   };
 
   return (
@@ -70,10 +79,7 @@ export default function ExercisesPage() {
 
       {isAdding ? (
         <div className="mb-8">
-          <ExerciseForm
-            onSubmit={handleSubmit}
-            initialData={editingExercise || undefined}
-          />
+          <ExerciseForm onSubmit={handleSubmit} initialData={editingExercise || undefined} />
           <Button
             variant="ghost"
             onClick={() => {
@@ -86,12 +92,15 @@ export default function ExercisesPage() {
           </Button>
         </div>
       ) : (
-        <ExerciseList
-          exercises={exercises}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        <ExerciseList exercises={exercises} onEdit={handleEdit} onDelete={handleDelete} />
       )}
+
+      <DeleteConfirmationModal
+        isOpen={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onConfirm={() => confirmDelete(exerciseToDelete?.id || '')}
+        exerciseName={exerciseToDelete?.name}
+      />
     </div>
   );
 }
